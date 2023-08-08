@@ -1,0 +1,23 @@
+name: Comment Issue
+inputs:
+  message:
+    description: 'Message to use as comment on the issue'
+    required: true
+    type: string
+  issue-number:
+    description: 'Number of the Pull Request / Issue to comment, will default to context issue'
+    required: false
+    default: context.issue.number
+    type: string
+runs:
+  using: composite
+  steps:
+    - uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: ${{ inputs.issue-number }},
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `${{ inputs.message }}`
+          });
